@@ -6,7 +6,7 @@ void chirp_setup() {
 }
 
 unsigned int chirp_read(int val) {
-    Wire.beginTransmission(ADDR);
+    Wire.beginTransmission(ADDR); // start comm with chirp
     Wire.write(val); // write which sensor to read
     Wire.endTransmission();
 

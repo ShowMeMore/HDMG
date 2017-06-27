@@ -5,7 +5,6 @@
 void setup() {
   // initialize digital pin LED_BUILTIN as an output.
   pinMode(LED_BUILTIN, OUTPUT);
-  // initialize i2c communication
   // initialize chirp
   chirp_setup();
   // initialize serial monitor with baude rate
