@@ -1,17 +1,13 @@
 #include <Wire.h>
-
-#define CAPA 0
-#define TEMP 5
-
-// I2C address of Chirp
-int addr = 0x20;
+#include "chirp/chirp_driver.c"
 
 // the setup function runs once when you press reset or power the board
 void setup() {
   // initialize digital pin LED_BUILTIN as an output.
   pinMode(LED_BUILTIN, OUTPUT);
   // initialize i2c communication
-  Wire.begin();
+  // initialize chirp
+  chirp_setup();
   // initialize serial monitor with baude rate
   Serial.begin(9600);
 }
@@ -23,22 +19,7 @@ void loop() {
   digitalWrite(LED_BUILTIN, LOW);    // turn the LED off by making the voltage LOW
   delay(500);                       // wait for a second
 
-  // read 16bit register of chirp capacitance
-  /* Chirp read procedure:
-  - write "sensor value"
-  - wait for measurement -> delay(20)
-  - read number of bytes
-  sensor; sensor value; #bytes
-  capacitance; 0; 2
-  temperature; 5; 2
-  light; 3 + 4 (write 2 values!); 2 */
-  Wire.beginTransmission(addr);
-  Wire.write(CAPA);  
-  Wire.endTransmission();
-  delay(20);
-  Wire.requestFrom(addr,2);
-
-  unsigned int t = Wire.read() << 8;
-  t = t | Wire.read();
-  Serial.println(t);
+  Serial.print(chirp_read(CAPA));
+  Serial.print(", ");
+  Serial.println(chirp_read(TEMP));
 }
