@@ -1,10 +1,11 @@
 #include <Wire.h>
 #include "chirp/chirp_driver.c"
+#include "led/led_driver.c"
 
 // the setup function runs once when you press reset or power the board
 void setup() {
-  // initialize digital pin LED_BUILTIN as an output.
-  pinMode(LED_BUILTIN, OUTPUT);
+  // initialize LED
+  led_setup();
   // initialize chirp
   chirp_setup();
   // initialize serial monitor with baude rate
@@ -13,12 +14,20 @@ void setup() {
 
 // the loop function runs over and over again forever
 void loop() {
-  digitalWrite(LED_BUILTIN, HIGH);   // turn the LED on (HIGH is the voltage level)
-  delay(500);                       // wait for a second
-  digitalWrite(LED_BUILTIN, LOW);    // turn the LED off by making the voltage LOW
-  delay(500);                       // wait for a second
 
-  Serial.print(chirp_read(CAPA));
-  Serial.print(", ");
-  Serial.println(chirp_read(TEMP));
+  //led_on();    // turn the LED on
+  //delay(500);      // wait for a second
+  //led_off();   // turn the LED off
+  //delay(500);      // wait for a second
+  
+  led_toggle();
+  delay(500);
+
+  //led_blink(2000,500);
+
+  //digitalWrite(LED_ADDR_BUILTIN, HIGH);
+  //delay(500);
+  //digitalWrite(LED_ADDR_BUILTIN, LOW);
+  //delay(500);
+  
 }
