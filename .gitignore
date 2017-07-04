@@ -1,6 +1,12 @@
 # Lines starting with '#' are considered comments.
 # Always relative to the location of the .gitignore file
+
 # Ignore folder .vscode on this level, incl. all subfolders and files
 .vscode/**
+
 # Ignore each folder .vscode on every level, incl. all subfolders and files
 **/.vscode/**
+
+# Ignore each file hardware_lu.h and hardware_rb.h  on every level
+**/.hardware_lu.h
+**/.hardware_rb.h
