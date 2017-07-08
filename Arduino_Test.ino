@@ -20,14 +20,13 @@ void loop() {
   //led_off();   // turn the LED off
   //delay(500);      // wait for a second
   
-  led_toggle();
-  delay(500);
+  //led_toggle();
+  //delay(500);
 
   //led_blink(2000,500);
 
-  //digitalWrite(LED_ADDR_BUILTIN, HIGH);
-  //delay(500);
-  //digitalWrite(LED_ADDR_BUILTIN, LOW);
-  //delay(500);
-  
+  //Serial.println(chirp_read(CAPA));
+  //Serial.println(chirp_read(TEMP));
+  //led_blink(2000,500);
+
 }
