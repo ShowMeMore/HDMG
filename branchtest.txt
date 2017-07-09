@@ -1,2 +1,7 @@
 09.07.2017 15.45 erstellt lu
+<<<<<<< HEAD
 09.07.2017 15.56 2nd commit lu, will not be pushed
+=======
+
+09.07.2017 16.37 geändert rb
+>>>>>>> 69e926f07880cbe8add15a055d8abb2c6fac97af
