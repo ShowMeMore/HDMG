@@ -1,14 +1,5 @@
 09.07.2017 15.45 erstellt lu
-<<<<<<< HEAD
 09.07.2017 15.56 2nd commit lu, will not be pushed
-
 09.07.2017 16.37 geändert rb
 09.07.2017 16.42 merged local commit with pulled change rb, 3rd modif commit lu with push
-=======
-<<<<<<< HEAD
-09.07.2017 15.56 2nd commit lu, will not be pushed
-=======
-
-09.07.2017 16.37 geändert rb
->>>>>>> 69e926f07880cbe8add15a055d8abb2c6fac97af
->>>>>>> 05de1526ad62c1a8a82906165d8aea259312423b
+09.07.2017 16.50 lu confused
