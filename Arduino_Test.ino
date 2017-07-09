@@ -28,5 +28,6 @@ void loop() {
   //Serial.println(chirp_read(CAPA));
   //Serial.println(chirp_read(TEMP));
   //led_blink(2000,500);
+  Serial.println(chirp_read(CAPA));
 
 }
