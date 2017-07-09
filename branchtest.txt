@@ -1,2 +1,5 @@
 09.07.2017 15.45 erstellt lu
 09.07.2017 15.56 2nd commit lu, will not be pushed
+
+09.07.2017 16.37 geändert rb
+09.07.2017 16.42 merged local commit with pulled change rb, 3rd modif commit lu with push
