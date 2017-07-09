@@ -5,7 +5,7 @@
 // the setup function runs once when you press reset or power the board
 void setup() {
   // initialize LED
-  led_setup();
+  led_setup(LED_PIN_CURRENT);
   // initialize chirp
   chirp_setup();
   // initialize serial monitor with baude rate
@@ -15,19 +15,19 @@ void setup() {
 // the loop function runs over and over again forever
 void loop() {
 
-  //led_on();    // turn the LED on
+  //led_on(LED_PIN_CURRENT);    // turn the LED on
   //delay(500);      // wait for a second
-  //led_off();   // turn the LED off
+  //led_off(LED_PIN_CURRENT);   // turn the LED off
   //delay(500);      // wait for a second
   
-  //led_toggle();
+  //led_toggle(LED_PIN_CURRENT);
   //delay(500);
 
-  //led_blink(2000,500);
+  led_blink(LED_PIN_CURRENT,2000,500);
 
   //Serial.println(chirp_read(CAPA));
   //Serial.println(chirp_read(TEMP));
   //led_blink(2000,500);
-  Serial.println(chirp_read(CAPA));
+  //Serial.println(chirp_read(CAPA));
 
 }
