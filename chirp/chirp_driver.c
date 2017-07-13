@@ -1,18 +1,34 @@
-#include "chirp_driver.h"
+#define CHIRP_I2C_ADDR 0x20 // chirp I2C address
+#define CHIRP_I2C_CAPA 0 // value for reading capacitance sensor
+#define CHIRP_I2C_TEMP 5 // value for reading temperature sensor
 
 void chirp_setup() {
+    pinMode(ENABLE_STEP_UP_PIN, OUTPUT);
+}
+
+void chirp_start() {
+    // power on chirp
+    digitalWrite(ENABLE_STEP_UP_PIN, ENABLE_STEP_UP_ON);
+    delay(200);
     // initialize I2C communication
     Wire.begin();
 }
 
-unsigned int chirp_read(int val) {
-    Wire.beginTransmission(ADDR); // start comm with chirp
-    Wire.write(val); // write which sensor to read
+void chirp_stop() {
+    // end I2C communication
+    Wire.end();
+    // power off chirp
+    digitalWrite(ENABLE_STEP_UP_PIN, ENABLE_STEP_UP_OFF);
+}
+
+unsigned int chirp_read(int value) {
+    Wire.beginTransmission(CHIRP_I2C_ADDR); // start comm with chirp
+    Wire.write(value); // write which sensor to read
     Wire.endTransmission();
 
     delay(20); // wait for measurement
 
-    Wire.requestFrom(ADDR,2); // store 2 byte in Wire buffer
+    Wire.requestFrom(CHIRP_I2C_ADDR,2); // store 2 byte in Wire buffer
     unsigned int t = Wire.read() << 8; // read first byte and move to msb
     return t | Wire.read(); // read & add second byte (lsb)
 }

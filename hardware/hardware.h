@@ -1,0 +1,5 @@
+#define LED_PIN D4
+#define ENABLE_STEP_UP_PIN D5
+
+#define ENABLE_STEP_UP_OFF HIGH
+#define ENABLE_STEP_UP_ON LOW

@@ -1,4 +1,5 @@
-#include "led_driver.h"
+//#include "led_driver.h"
+boolean led_status;
 
 void led_setup(int pin) {
     // initialize LED communication
