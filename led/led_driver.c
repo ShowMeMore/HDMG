@@ -1,8 +1,4 @@
-#define LED_PIN_BUILTIN D13 // pin of BLENano builtin led
-#define LED_PIN D13 // pin of another LED
-#define LED_PIN_CURRENT LED_PIN_BUILTIN // define the current working pin
-
-boolean led_status;
+#include "led_driver.h"
 
 void led_setup(int pin) {
     // initialize LED communication

@@ -16,18 +16,14 @@ void setup() {
 // the loop function runs over and over again forever
 void loop() {
 
-  led_blink(LED_PIN, 500, 1000);    // turn the LED on
+  led_blink(LED_PIN,500,1000);
   
-  chirp_start();
-  Serial.println(chirp_read(CHIRP_I2C_CAPA));
-  chirp_stop();
-
-  //led_toggle(LED_PIN_CURRENT);
-  //delay(500);
+  //chirp_start();
+  //Serial.println(chirp_read(CHIRP_I2C_CAPA));
+  //chirp_stop();
 
   //Serial.println(chirp_read(CHIRP_I2C_CAPA));
   //Serial.println(chirp_read(CHIRP_I2C_TEMP));
-  //led_blink(2000,500);
-  //Serial.println(chirp_read(CHIRP_I2C_CAPA));
+  led_blink(LED_PIN_BUILTIN,2000,500);
 
 }
