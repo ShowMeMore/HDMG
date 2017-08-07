@@ -36,6 +36,9 @@ void loop() {
       //LED indicates measurement
       led_blink(LED_PIN,2000,0);
       /* do measurement*/
+      chirp_start();
+      Serial.println(chirp_read(CHIRP_I2C_CAPA));
+      chirp_stop();
       mFlag = false;
 
       //check plantState for LED
@@ -48,10 +51,10 @@ void loop() {
       if (sFlag) {
         state = CONNECT;
         n = 7;
-        Serial.println("Enter Connect Mode (m)");
+        Serial.println("Leave Measure Mode - Enter Connect Mode");
       } else {
         state = SLEEP;
-        Serial.println("Enter Sleep Mode (m)");
+        Serial.println("Leave Measure Mode - Enter Sleep Mode");
       }
     }
     break;
@@ -65,7 +68,7 @@ void loop() {
       /* determine transition & prep */
       if (true) { //bleconnected
         state = SEND;
-        Serial.println("Enter Send Mode (c)");
+        Serial.println("Leave Connect Mode - Enter Send Mode");
       } else {
         if (!plantState) {
           if (n>0) {
@@ -73,12 +76,12 @@ void loop() {
           } else {
             sFlag = false;
             state = SLEEP;
-            Serial.println("Enter Sleep Mode (c)");
+            Serial.println("Leave Connect Mode - Enter Sleep Mode");
           }
         } else {
           sFlag = false;
           state = SLEEP;
-          Serial.println("Enter Sleep Mode (c)");
+          Serial.println("Leave Connect Mode - Enter Sleep Mode");
         }
       }
     }
@@ -94,18 +97,17 @@ void loop() {
       
       /* determine transition & prep */
       state = SLEEP;
-      Serial.println("Enter Sleep Mode (s)");
+      Serial.println("Leave Send Mode - Enter Sleep Mode");
     }
     break;
 
     //sleep
     case 4: {
-      Serial.println("sleeping...");
       led_on(LED_PIN_BUILTIN);
       if (mFlag) {
         state = MEASURE;
         led_off(LED_PIN_BUILTIN);
-        Serial.println("Enter Measure Mode (s)");
+        Serial.println("Leave Sleep Mode - Enter Measure Mode");
       }
       /* do  setup sleep mode*/
       
