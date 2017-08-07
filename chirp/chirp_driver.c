@@ -36,6 +36,7 @@ unsigned int chirp_read(int value) {
     return t | Wire.read(); // read & add second byte (lsb)
 }
 
-int hum_to_percent(unsigned int value) {
-    return 100/(CHIRP_HUM_TOP-CHIRP_HUM_BOTTOM)*(value-CHIRP_HUM_BOTTOM);
+float chirp_to_percent(unsigned int value) {
+    float val = (float)100/(765-297)*(value-297);
+    return val;
 }

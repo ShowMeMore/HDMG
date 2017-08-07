@@ -1,6 +1,7 @@
 #include <Wire.h>
 
 /* globals */
+const int HUM_ALARM_VALUE = 50;
 int state = 4;
 boolean plantState = true; // ok=true, nok=false
 byte n; // 8 bit unsigned integer
@@ -38,6 +39,13 @@ void loop() {
       /* do measurement*/
       chirp_start();
       Serial.println(chirp_read(CHIRP_I2C_CAPA));
+      Serial.println(chirp_to_percent(chirp_read(CHIRP_I2C_CAPA)));
+      if (chirp_to_percent(chirp_read(CHIRP_I2C_CAPA)) < HUM_ALARM_VALUE)
+      {
+        plantState = false;
+      }else{
+        plantState = true;
+      }
       chirp_stop();
       mFlag = false;
 
@@ -108,6 +116,10 @@ void loop() {
         state = MEASURE;
         led_off(LED_PIN_BUILTIN);
         Serial.println("Leave Sleep Mode - Enter Measure Mode");
+      }
+      if (!plantState) {
+        led_blink(LED_PIN,200,200);
+        Serial.print("Too Dry - Need Water!!! ");
       }
       /* do  setup sleep mode*/
       
