@@ -1,9 +1,18 @@
+#define PLANT_OK true
+#define PLANT_THIRSTY false
+
+#define MEASURE 1
+#define CONNECT 2
+#define SEND 3
+#define SLEEP 4
+
+#define HUM_ALARM_VALUE 50
+
 #include <Wire.h>
 
 /* globals */
-const int HUM_ALARM_VALUE = 50;
-int state = 4;
-boolean plantState = true; // ok=true, nok=false
+int state = SLEEP;
+boolean plantState = PLANT_OK; // enum {PLANT_OK, PLANT_THIRSTY}
 byte n; // 8 bit unsigned integer
 boolean  mFlag, sFlag, lFlag = false;
 Ticker measureTicker, sendTicker, ledTicker;
@@ -14,12 +23,12 @@ Ticker measureTicker, sendTicker, ledTicker;
 #include "statemachine/statemachine.c"
 
 void setup() {
+  // initialize serial monitor with baude rate
+  Serial.begin(9600);
   // initialize LED
   led_setup(LED_PIN);
   // initialize chirp
   chirp_setup();
-  // initialize serial monitor with baude rate
-  Serial.begin(9600);
   // create two task, one 1s and the other 2s
   //ticker for measure
   measureTicker.attach(measureTicker_handle, 12);
@@ -33,28 +42,33 @@ void loop() {
   switch (state) {
 
     // measure
-    case 1: {
+    case MEASURE: {
       //LED indicates measurement
       led_blink(LED_PIN,2000,0);
       /* do measurement*/
       chirp_start();
-      Serial.println(chirp_read(CHIRP_I2C_CAPA));
-      Serial.println(chirp_to_percent(chirp_read(CHIRP_I2C_CAPA)));
-      if (chirp_to_percent(chirp_read(CHIRP_I2C_CAPA)) < HUM_ALARM_VALUE)
-      {
-        plantState = false;
-      }else{
-        plantState = true;
-      }
+      Serial.println(chirp_read(CHIRP_I2C_CAPA)); //
+      float humidity = chirp_read_stable();
       chirp_stop();
+      Serial.println(humidity);
+      if (humidity < HUM_ALARM_VALUE)
+      {
+        plantState = PLANT_THIRSTY;
+        lFlag = true;
+        ledTicker.attach(ledTicker_handle, 3);
+      }else{
+        plantState = PLANT_OK;
+        ledTicker.detach();
+      }
       mFlag = false;
 
       //check plantState for LED
-      if (!plantState) {
+      if (plantState == PLANT_THIRSTY) {
         /* do Set Led Timer */
       } else {
         /* do Clear Led Timer */
       }
+
       /* determine transition & prep */
       if (sFlag) {
         state = CONNECT;
@@ -68,7 +82,7 @@ void loop() {
     break;
 
     // connect --> implement later
-    case 2: {
+    case CONNECT: {
       /* do */
       // setup ble adertising
       // wait?
@@ -84,6 +98,7 @@ void loop() {
           } else {
             sFlag = false;
             state = SLEEP;
+            Serial.println("Connection failed");
             Serial.println("Leave Connect Mode - Enter Sleep Mode");
           }
         } else {
@@ -96,7 +111,7 @@ void loop() {
     break;
 
     //send --> implement later
-    case 3: {
+    case SEND: {
       /* do */
       // send data
       // clear data
@@ -110,16 +125,17 @@ void loop() {
     break;
 
     //sleep
-    case 4: {
+    case SLEEP: {
       led_on(LED_PIN_BUILTIN);
       if (mFlag) {
         state = MEASURE;
         led_off(LED_PIN_BUILTIN);
         Serial.println("Leave Sleep Mode - Enter Measure Mode");
       }
-      if (!plantState) {
-        led_blink(LED_PIN,200,200);
-        Serial.print("Too Dry - Need Water!!! ");
+      if (lFlag) {
+        led_blink(LED_PIN,200,0);
+        Serial.println("Too Dry - Need Water!!! ");
+        lFlag = false;
       }
       /* do  setup sleep mode*/
       

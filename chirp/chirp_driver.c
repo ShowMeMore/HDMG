@@ -16,15 +16,15 @@ void chirp_setup() {
 
 void chirp_start() {
     // power on chirp
-    Serial.println("chirp_driver: powering on step up");
+    //Serial.println("chirp_driver: powering on step up");
     digitalWrite(ENABLE_STEP_UP_PIN, ENABLE_STEP_UP_ON);
-    Serial.println("chirp_driver: step up powered on");
+    //Serial.println("chirp_driver: step up powered on");
     delay(500);
     // initialize I2C communication
-    Serial.println("chirp_driver: starting Wire");
+    //Serial.println("chirp_driver: starting Wire");
     Wire.begin();
     delay(100);
-    Serial.println("chirp_driver: Wire started");
+    //Serial.println("chirp_driver: Wire started");
 }
 
 void chirp_stop() {
@@ -36,6 +36,7 @@ void chirp_stop() {
     Wire.end();
     // power off chirp
     digitalWrite(ENABLE_STEP_UP_PIN, ENABLE_STEP_UP_OFF);
+    //Serial.println("chirp_driver: Wire and power turned off");
 }
 
 unsigned int chirp_read(int sensor) {
@@ -51,8 +52,13 @@ unsigned int chirp_read(int sensor) {
     return t | Wire.read(); // read & add second byte (lsb)
 }
 
+float chirp_to_percent(unsigned int value) {
+    float val = (float)100/(CHIRP_HUM_TOP-CHIRP_HUM_BOTTOM)*(value-CHIRP_HUM_BOTTOM);
+    return val;
+}
+
 // averaged sensor value of moisture sensor
-unsigned int chirp_read_stable() {
+float chirp_read_stable() {
     unsigned int sum = 0;
     unsigned int value;
     bool error = false;
@@ -75,16 +81,11 @@ unsigned int chirp_read_stable() {
     // return average sensor value or error value (=0)
     if (!error) {
         // (unsigned int) sum = [0 65535]
-        // max sensor value: 1000?
-        // max nbr of tests: 65535/1000 = 65
-        return sum / NBR_TESTS;
+        // max sensor value: 765
+        // max nbr of tests: 65535/765 = 85
+        return chirp_to_percent(sum / NBR_TESTS);
     }
     else {
         return 0;
     }
-}
-
-float chirp_to_percent(unsigned int value) {
-    float val = (float)100/(CHIRP_HUM_TOP-CHIRP_HUM_BOTTOM)*(value-CHIRP_HUM_BOTTOM);
-    return val;
 }
