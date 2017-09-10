@@ -5,13 +5,9 @@
 
 #define NBR_PRETESTS 3 // number of tests befor averaging sensor value
 #define NBR_TESTS 32 // number of tests for averaging sensor value
-#define VALUE_MIN 270 // min value for moisture sensor
-#define VALUE_MAX 900 // max value for moisture sensor
+#define CHIRP_HUM_BOTTOM 297 // min value for moisture sensor
+#define CHIRP_HUM_TOP 765 // max value for moisture sensor
 
-#include "../hardware/hardware_lu.h"
-
-const int CHIRP_HUM_BOTTOM = 297;
-const int CHIRP_HUM_TOP = 765;
 
 void chirp_setup() {
     pinMode(ENABLE_STEP_UP_PIN, OUTPUT);
@@ -68,7 +64,7 @@ unsigned int chirp_read_stable() {
     for (char i=0; i<NBR_TESTS; i++) {
         value = chirp_read(CHIRP_I2C_CAPA);
         // catch if error occurs when reading sensor value
-        if ((value < VALUE_MIN) || (value > VALUE_MAX)) {
+        if ((value < CHIRP_HUM_BOTTOM) || (value > CHIRP_HUM_TOP)) {
             error = true;
             Serial.print("chirp_driver: error: ");
             Serial.println(value);
@@ -86,7 +82,9 @@ unsigned int chirp_read_stable() {
     else {
         return 0;
     }
+}
+
 float chirp_to_percent(unsigned int value) {
-    float val = (float)100/(765-297)*(value-297);
+    float val = (float)100/(CHIRP_HUM_TOP-CHIRP_HUM_BOTTOM)*(value-CHIRP_HUM_BOTTOM);
     return val;
 }
