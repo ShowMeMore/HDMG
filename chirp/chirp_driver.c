@@ -10,6 +10,9 @@
 
 #include "../hardware/hardware_lu.h"
 
+const int CHIRP_HUM_BOTTOM = 297;
+const int CHIRP_HUM_TOP = 765;
+
 void chirp_setup() {
     pinMode(ENABLE_STEP_UP_PIN, OUTPUT);
     digitalWrite(ENABLE_STEP_UP_PIN, ENABLE_STEP_UP_OFF);
@@ -83,4 +86,7 @@ unsigned int chirp_read_stable() {
     else {
         return 0;
     }
+float chirp_to_percent(unsigned int value) {
+    float val = (float)100/(765-297)*(value-297);
+    return val;
 }

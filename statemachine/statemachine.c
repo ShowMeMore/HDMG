@@ -1,11 +1,11 @@
 #include "statemachine.h"
 
-void mTicker_handle(void) {
+void measureTicker_handle(void) {
   mFlag = true; //wake up to measure
 }
-void sTicker_handle(void) {
+void sendTicker_handle(void) {
   sFlag = true; //wake up to send
 }
-void lTicker_handle(void) {
+void ledTicker_handle(void) {
   lFlag = true; //wake up to blink LED
 }
