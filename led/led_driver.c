@@ -9,13 +9,13 @@ void led_setup(int pin) {
 
 // Turn LED on
 void led_on(int pin) {
-    digitalWrite(pin, HIGH);   // turn the LED on (HIGH is the voltage level)
+    digitalWrite(pin, ENABLE_LED_ON);   // turn the LED on (HIGH is the voltage level)
     led_status = true;
 }
 
 // Turn LED off
 void led_off(int pin) {
-    digitalWrite(pin, LOW);    // turn the LED off by making the voltage LOW
+    digitalWrite(pin, ENABLE_LED_OFF);    // turn the LED off by making the voltage LOW
     led_status = false;
 }
 
