@@ -10,7 +10,7 @@
 
 #include <Wire.h>
 
-/* globals */
+// globals
 int state = SLEEP;
 boolean plantState = PLANT_OK; // enum {PLANT_OK, PLANT_THIRSTY}
 byte n; // 8 bit unsigned integer
@@ -45,7 +45,7 @@ void loop() {
     case MEASURE: {
       //LED indicates measurement
       led_blink(LED_PIN,2000,0);
-      /* do measurement*/
+      // do measurement
       chirp_start();
       Serial.println(chirp_read(CHIRP_I2C_CAPA)); //
       float humidity = chirp_read_stable();
@@ -54,24 +54,24 @@ void loop() {
       if (humidity < HUM_ALARM_VALUE)
       {
         plantState = PLANT_THIRSTY;
-        lFlag = true;
+        ledFlag = true;
         ledTicker.attach(ledTicker_handle, 3);
       }else{
         plantState = PLANT_OK;
-        lFlag = false;
+        ledFlag = false;
         ledTicker.detach();
       }
-      mFlag = false;
+      measureFlag = false;
 
       //check plantState for LED
       if (plantState == PLANT_THIRSTY) {
-        /* do Set Led Timer */
+        // do Set Led Timer
       } else {
-        /* do Clear Led Timer */
+        // do Clear Led Timer
       }
 
-      /* determine transition & prep */
-      if (sFlag) {
+      // determine transition & prep
+      if (sendFlag) {
         state = CONNECT;
         n = 7;
         Serial.println("Leave Measure Mode - Enter Connect Mode");
@@ -84,11 +84,11 @@ void loop() {
 
     // connect --> implement later
     case CONNECT: {
-      /* do */
+      // do
       // setup ble adertising
       // wait?
       
-      /* determine transition & prep */
+      // determine transition & prep
       if (true) { //bleconnected
         state = SEND;
         Serial.println("Leave Connect Mode - Enter Send Mode");
@@ -97,13 +97,13 @@ void loop() {
           if (n>0) {
             n--;
           } else {
-            sFlag = false;
+            sendFlag = false;
             state = SLEEP;
             Serial.println("Connection failed");
             Serial.println("Leave Connect Mode - Enter Sleep Mode");
           }
         } else {
-          sFlag = false;
+          sendFlag = false;
           state = SLEEP;
           Serial.println("Leave Connect Mode - Enter Sleep Mode");
         }
@@ -113,13 +113,13 @@ void loop() {
 
     //send --> implement later
     case SEND: {
-      /* do */
+      // do
       // send data
       // clear data
       // close ble connection
       // failure exception
       
-      /* determine transition & prep */
+      // determine transition & prep
       state = SLEEP;
       Serial.println("Leave Send Mode - Enter Sleep Mode");
     }
@@ -128,19 +128,19 @@ void loop() {
     //sleep
     case SLEEP: {
       led_on(LED_PIN_BUILTIN);
-      if (mFlag) {
+      if (measureFlag) {
         state = MEASURE;
         led_off(LED_PIN_BUILTIN);
         Serial.println("Leave Sleep Mode - Enter Measure Mode");
       }
-      if (lFlag) {
+      if (ledFlag) {
         led_blink(LED_PIN,200,0);
         Serial.println("Too Dry - Need Water!!! ");
-        lFlag = false;
+        ledFlag = false;
       }
-      /* do  setup sleep mode*/
+      // do  setup sleep mode
       
-      /* determine transition & prep */
+      // determine transition & prep
       //Switch state {
         //Case: sleep {
           // go to sleep
