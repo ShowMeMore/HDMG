@@ -5,7 +5,9 @@
 
 #define NBR_PRETESTS 3 // number of tests befor averaging sensor value
 #define NBR_TESTS 32 // number of tests for averaging sensor value
-#define CHIRP_HUM_BOTTOM 297 // min value for moisture sensor
+#define NBR_MAX_ERRORS 32 // max number of failed tests in stable 
+
+#define CHIRP_HUM_BOTTOM 290 // min value for moisture sensor
 #define CHIRP_HUM_TOP 765 // max value for moisture sensor
 
 
@@ -67,25 +69,24 @@ float chirp_read_stable() {
         chirp_read(CHIRP_I2C_CAPA);
     }
     // sum up sensor values for averaging
-    for (char i=0; i<NBR_TESTS; i++) {
+    char i = NBR_TESTS;
+    char count_errors = 0;
+    while (i > 0) {
         value = chirp_read(CHIRP_I2C_CAPA);
         // catch if error occurs when reading sensor value
-        if ((value < CHIRP_HUM_BOTTOM) || (value > CHIRP_HUM_TOP)) {
-            error = true;
-            Serial.print("chirp_driver: error: ");
-            Serial.println(value);
-            break;
+        if ((value >= CHIRP_HUM_BOTTOM) && (value <= CHIRP_HUM_TOP)) {
+            sum += value;
+            i--;
+        } else {
+            count_errors++;
+            if (count_errors > NBR_MAX_ERRORS) {
+                // too many error value sensor reads
+                return 0;
+            }
         }
-        sum += value;
     }
-    // return average sensor value or error value (=0)
-    if (!error) {
-        // (unsigned int) sum = [0 65535]
-        // max sensor value: 765
-        // max nbr of tests: 65535/765 = 85
-        return chirp_to_percent(sum / NBR_TESTS);
-    }
-    else {
-        return 0;
-    }
+    // (unsigned int) sum = [0 65535]
+    // max sensor value: 765
+    // max nbr of tests: 65535/765 = 85
+    return chirp_to_percent(sum / NBR_TESTS);
 }
