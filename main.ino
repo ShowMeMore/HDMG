@@ -58,6 +58,7 @@ void loop() {
         ledTicker.attach(ledTicker_handle, 3);
       }else{
         plantState = PLANT_OK;
+        lFlag = false;
         ledTicker.detach();
       }
       mFlag = false;
