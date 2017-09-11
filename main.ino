@@ -14,7 +14,7 @@
 int state = SLEEP;
 boolean plantState = PLANT_OK; // enum {PLANT_OK, PLANT_THIRSTY}
 byte n; // 8 bit unsigned integer
-boolean  mFlag, sFlag, lFlag = false;
+boolean  measureFlag, sendFlag, ledFlag = false;
 Ticker measureTicker, sendTicker, ledTicker;
 
 #include "hardware/hardware.h"
