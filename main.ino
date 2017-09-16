@@ -133,7 +133,7 @@ void loop() {
         led_off(LED_PIN_BUILTIN);
         Serial.println("Leave Sleep Mode - Enter Measure Mode");
       }
-      if (ledFlag) {
+      else if (ledFlag) {
         led_blink(LED_PIN,200,0);
         Serial.println("Too Dry - Need Water!!! ");
         ledFlag = false;

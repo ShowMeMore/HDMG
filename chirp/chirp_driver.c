@@ -63,7 +63,6 @@ float chirp_to_percent(unsigned int value) {
 float chirp_read_stable() {
     unsigned int sum = 0;
     unsigned int value;
-    bool error = false;
     // read sensor values without using them
     for (char i=0; i<NBR_PRETESTS; i++) {
         chirp_read(CHIRP_I2C_CAPA);
