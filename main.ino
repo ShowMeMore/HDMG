@@ -17,11 +17,11 @@ byte n; // 8 bit unsigned integer
 boolean  measureFlag, sendFlag, ledFlag = false;
 Ticker measureTicker, sendTicker, ledTicker;
 
-#include "hardware/hardware.h"
 #include "files/debug.c"
-#include "led/led_driver.c"
-#include "chirp/chirp_driver.c"
-#include "statemachine/statemachine.c"
+#include "files/statemachine.c"
+#include "drivers/hardware.h"
+#include "drivers/led_driver.c"
+#include "drivers/chirp_driver.c"
 
 void setup() {
   // initialize serial monitor with baude rate
