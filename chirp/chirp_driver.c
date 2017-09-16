@@ -18,15 +18,15 @@ void chirp_setup() {
 
 void chirp_start() {
     // power on chirp
-    //Serial.println("chirp_driver: powering on step up");
+    debug_msg_ln("chirp_driver: powering on step up", DEBUG_CHIRP);
     digitalWrite(ENABLE_STEP_UP_PIN, ENABLE_STEP_UP_ON);
-    //Serial.println("chirp_driver: step up powered on");
+    debug_msg_ln("chirp_driver: step up powered on", DEBUG_CHIRP);
     delay(500);
     // initialize I2C communication
-    //Serial.println("chirp_driver: starting Wire");
+    debug_msg_ln("chirp_driver: starting Wire", DEBUG_CHIRP);
     Wire.begin();
     delay(100);
-    //Serial.println("chirp_driver: Wire started");
+    debug_msg_ln("chirp_driver: Wire started", DEBUG_CHIRP);
 }
 
 void chirp_stop() {
@@ -38,7 +38,7 @@ void chirp_stop() {
     Wire.end();
     // power off chirp
     digitalWrite(ENABLE_STEP_UP_PIN, ENABLE_STEP_UP_OFF);
-    //Serial.println("chirp_driver: Wire and power turned off");
+    debug_msg_ln("chirp_driver: Wire and power turned off", DEBUG_CHIRP);
 }
 
 unsigned int chirp_read(int sensor) {

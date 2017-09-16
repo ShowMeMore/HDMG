@@ -18,13 +18,14 @@ boolean  measureFlag, sendFlag, ledFlag = false;
 Ticker measureTicker, sendTicker, ledTicker;
 
 #include "hardware/hardware.h"
+#include "files/debug.c"
 #include "led/led_driver.c"
 #include "chirp/chirp_driver.c"
 #include "statemachine/statemachine.c"
 
 void setup() {
   // initialize serial monitor with baude rate
-  Serial.begin(9600);
+  debug_setup();
   // initialize LED
   led_setup(LED_PIN);
   // initialize chirp
@@ -46,9 +47,9 @@ void loop() {
       //LED indicates measurement
       led_blink(LED_PIN,2000,0);
       // do measurement
-      Serial.println(chirp_read_value(CHIRP_I2C_CAPA)); //
+      debug_msg_ln(chirp_read_value(CHIRP_I2C_CAPA), DEBUG_STATE); //
       float humidity = chirp_read_stable();
-      Serial.println(humidity);
+      debug_msg_ln(humidity, DEBUG_STATE);
       if (humidity < HUM_ALARM_VALUE)
       {
         plantState = PLANT_THIRSTY;
@@ -72,10 +73,10 @@ void loop() {
       if (sendFlag) {
         state = CONNECT;
         n = 7;
-        Serial.println("Leave Measure Mode - Enter Connect Mode");
+        debug_msg_ln("Leave Measure Mode - Enter Connect Mode", DEBUG_STATE);
       } else {
         state = SLEEP;
-        Serial.println("Leave Measure Mode - Enter Sleep Mode");
+        debug_msg_ln("Leave Measure Mode - Enter Sleep Mode", DEBUG_STATE);
       }
     }
     break;
@@ -89,21 +90,23 @@ void loop() {
       // determine transition & prep
       if (true) { //bleconnected
         state = SEND;
-        Serial.println("Leave Connect Mode - Enter Send Mode");
-      } else {
+        debug_msg_ln("Leave Connect Mode - Enter Send Mode", DEBUG_STATE);
+      } 
+      else {
         if (!plantState) {
           if (n>0) {
             n--;
-          } else {
+          } 
+          else {
             sendFlag = false;
             state = SLEEP;
-            Serial.println("Connection failed");
-            Serial.println("Leave Connect Mode - Enter Sleep Mode");
+            debug_msg_ln("Connection failed", DEBUG_STATE);
+            debug_msg_ln("Leave Connect Mode - Enter Sleep Mode", DEBUG_STATE);
           }
         } else {
           sendFlag = false;
           state = SLEEP;
-          Serial.println("Leave Connect Mode - Enter Sleep Mode");
+          debug_msg_ln("Leave Connect Mode - Enter Sleep Mode", DEBUG_STATE);
         }
       }
     }
@@ -119,7 +122,7 @@ void loop() {
       
       // determine transition & prep
       state = SLEEP;
-      Serial.println("Leave Send Mode - Enter Sleep Mode");
+      debug_msg_ln("Leave Send Mode - Enter Sleep Mode", DEBUG_STATE);
     }
     break;
 
@@ -129,11 +132,11 @@ void loop() {
       if (measureFlag) {
         state = MEASURE;
         led_off(LED_PIN_BUILTIN);
-        Serial.println("Leave Sleep Mode - Enter Measure Mode");
+        debug_msg_ln("Leave Sleep Mode - Enter Measure Mode", DEBUG_STATE);
       }
       else if (ledFlag) {
         led_blink(LED_PIN,200,0);
-        Serial.println("Too Dry - Need Water!!! ");
+        debug_msg_ln("Too Dry - Need Water!!!", DEBUG_STATE);
         ledFlag = false;
       }
       // do  setup sleep mode
