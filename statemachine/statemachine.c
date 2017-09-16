@@ -1,5 +1,3 @@
-#include "statemachine.h"
-
 void measureTicker_handle(void) {
   measureFlag = true; //wake up to measure
 }
