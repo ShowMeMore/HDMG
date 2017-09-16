@@ -46,10 +46,8 @@ void loop() {
       //LED indicates measurement
       led_blink(LED_PIN,2000,0);
       // do measurement
-      chirp_start();
-      Serial.println(chirp_read(CHIRP_I2C_CAPA)); //
+      Serial.println(chirp_read_value(CHIRP_I2C_CAPA)); //
       float humidity = chirp_read_stable();
-      chirp_stop();
       Serial.println(humidity);
       if (humidity < HUM_ALARM_VALUE)
       {

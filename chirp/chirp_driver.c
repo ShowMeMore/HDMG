@@ -54,6 +54,13 @@ unsigned int chirp_read(int sensor) {
     return t | Wire.read(); // read & add second byte (lsb)
 }
 
+unsigned int chirp_read_value(int sensor) {
+    chirp_start();
+    unsigned int result = chirp_read(sensor);
+    chirp_stop();
+    return result;
+}
+
 float chirp_to_percent(unsigned int value) {
     float val = (float)100/(CHIRP_HUM_TOP-CHIRP_HUM_BOTTOM)*(value-CHIRP_HUM_BOTTOM);
     return val;
@@ -63,6 +70,7 @@ float chirp_to_percent(unsigned int value) {
 float chirp_read_stable() {
     unsigned int sum = 0;
     unsigned int value;
+    chirp_start();
     // read sensor values without using them
     for (char i=0; i<NBR_PRETESTS; i++) {
         chirp_read(CHIRP_I2C_CAPA);
@@ -84,6 +92,7 @@ float chirp_read_stable() {
             }
         }
     }
+    chirp_stop();
     // (unsigned int) sum = [0 65535]
     // max sensor value: 765
     // max nbr of tests: 65535/765 = 85
