@@ -3,42 +3,62 @@ boolean led_status;
 void led_setup(int pin) {
     // initialize LED communication
     // initialize digital pin LED_BUILTIN as an output.
+    debug_msg("led_driver: Setup LED... ", DEBUG_LED);
     pinMode(pin, OUTPUT);
     led_status = false;
-    debug_msg_ln("led_driver: setup led", DEBUG_LED);
+    debug_msg_ln("DONE", DEBUG_LED);
 }
 
 // Turn LED on
 void led_on(int pin) {
+    debug_msg("led_driver: Turn LED on... ", DEBUG_LED);
     digitalWrite(pin, ENABLE_LED_ON);   // turn the LED on (HIGH is the voltage level)
     led_status = true;
-    debug_msg_ln("led_driver: led turned on", DEBUG_LED);
+    debug_msg_ln("DONE", DEBUG_LED);
 }
 
 // Turn LED off
 void led_off(int pin) {
+    debug_msg("led_driver: Turn LED off... ", DEBUG_LED);
     digitalWrite(pin, ENABLE_LED_OFF);    // turn the LED off by making the voltage LOW
     led_status = false;
-    debug_msg_ln("led_driver: led turned off", DEBUG_LED);
+    debug_msg_ln("DONE", DEBUG_LED);
 }
 
 // Toggle LED
 void led_toggle(int pin) {
+    debug_msg("led_driver: Toggle LED... ", DEBUG_LED);
     if (led_status) {
         led_off(pin);
-        debug_msg_ln("led_driver: led toggled off", DEBUG_LED);
     }
     else {
         led_on(pin);
-        debug_msg_ln("led_driver: led toggled on", DEBUG_LED);
     }
+    debug_msg_ln("DONE", DEBUG_LED);
 }
 
 // LED blinking with on_duration and off_duration
 void led_blink(int pin, int on_duration, int off_duration) {
+    debug_msg("led_driver: Blink LED... ", DEBUG_LED);
     led_on(pin);
     delay(on_duration);
     led_off(pin);
     delay(off_duration);
-    debug_msg_ln("led_driver: led blinked", DEBUG_LED);
+    debug_msg_ln("DONE", DEBUG_LED);
+}
+
+// LED blinking with measured value: more thirsty --> longer blink
+void led_valueblink(int pin, int total_duration, int value) {
+    debug_msg("led_driver: Blink LED with value... ", DEBUG_LED);
+    int max_on_duration = total_duration/2;
+    if (value <= HUM_ALARM_VALUE){
+        int on_duration = max_on_duration/HUM_ALARM_VALUE*(HUM_ALARM_VALUE-value);
+        int off_duration = total_duration-on_duration;
+        led_on(pin);
+        delay(on_duration);
+        led_off(pin);
+        delay(off_duration);
+        debug_msg_ln("DONE", DEBUG_LED);
+    }
+    debug_msg_ln("DONE (no blink)", DEBUG_LED);
 }
