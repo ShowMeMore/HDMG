@@ -4,9 +4,9 @@
 #define SEND 3
 #define SLEEP 4
 // define the timer values in seconds
-#define TIMER_VALUE_MEASURE 15
+#define TIMER_VALUE_MEASURE 10 // do measurement every hour: 3600
 #define TIMER_VALUE_LED 3
-#define TIMER_VALUE_SEND 60
+#define TIMER_VALUE_SEND 60 // send data every 6 hour: 21600
 // define threshold to give water
 #define HUM_ALARM_VALUE 50
 //define the states of the plant
@@ -17,15 +17,17 @@
 int state = SLEEP;  // enum {MEASURE, CONNECT, SEND, SLEEP}
 boolean plantState = PLANT_OK; // enum {PLANT_OK, PLANT_THIRSTY}
 byte n; // 8 bit unsigned integer
+int MeasureBuffer[12]; // store the measure values for 1 day (each 2 hours)
 boolean  measureFlag, sendFlag, ledFlag = false;
 Ticker measureTicker, sendTicker, ledTicker;
 
 #include <Wire.h>
 #include "files/debug.c"
 #include "files/statemachine.c"
+#include "files/measurebuffer.c"
 #include "drivers/hardware.h"
-#include "drivers/led_driver.c"
 #include "drivers/chirp_driver.c"
+#include "drivers/led_driver.c"
 
 void setup() {
   // initialize serial monitor with baude rate 9600
@@ -51,8 +53,9 @@ void loop() {
       led_on(LED_PIN);
       // do measurement
       debug_msg_ln(chirp_read_value(CHIRP_I2C_CAPA), DEBUG_STATE); //
-      float humidity = chirp_read_stable();
+      int humidity = chirp_read_stable();
       debug_msg_ln(humidity, DEBUG_STATE);
+      writeMeasureBuffer(humidity);
       // set plantState
       if (humidity < HUM_ALARM_VALUE)
       {
@@ -86,29 +89,18 @@ void loop() {
 
     // connect state --> implement later
     case CONNECT: {
-      // do
-      // setup ble adertising
+      // do: setup ble adertising
       // wait?
-      
-      // determine transition & prep
       if (true) { //bleconnected
         state = SEND;
         debug_msg_ln("Leave Connect Mode - Enter Send Mode", DEBUG_STATE);
-      } 
-      else {
-        if (!plantState) {
-          if (n>0) {
-            n--;
-          } 
-          else {
-            sendFlag = false;
-            state = SLEEP;
-            debug_msg_ln("Connection failed", DEBUG_STATE);
-            debug_msg_ln("Leave Connect Mode - Enter Sleep Mode", DEBUG_STATE);
-          }
+      } else {
+        if (n>0) {
+          n--;
         } else {
           sendFlag = false;
           state = SLEEP;
+          debug_msg_ln("Connection failed", DEBUG_STATE);
           debug_msg_ln("Leave Connect Mode - Enter Sleep Mode", DEBUG_STATE);
         }
       }
@@ -117,22 +109,23 @@ void loop() {
 
     // send state --> implement later
     case SEND: {
-      // do
-      // send data
-      // clear data
-      // close ble connection
-      // failure exception
-      
-      // determine transition & prep
-      state = SLEEP;
-      debug_msg_ln("Leave Send Mode - Enter Sleep Mode", DEBUG_STATE);
+      // do: send data
+      readMeasureBuffer();
+      if (true) { // data sent
+        // do: close ble connection
+        // do: failure exception
+        //clearMeasureBuffer();
+        state = SLEEP;
+        debug_msg_ln("Leave Send Mode - Enter Sleep Mode", DEBUG_STATE);
+      } else {
+
+      }      
     }
     break;
 
     // sleep state
     case SLEEP: {
-      //builtin LED to indicate sleep mode
-      led_on(LED_PIN_BUILTIN);
+      led_on(LED_PIN_BUILTIN); // use builtin LED to indicate sleep mode
       if (measureFlag) {
         state = MEASURE;
         debug_msg_ln("Leave Sleep Mode - Enter Measure Mode", DEBUG_STATE);
@@ -143,16 +136,10 @@ void loop() {
         debug_msg_ln("Too Dry - Need Water!!!", DEBUG_STATE);
         ledFlag = false;
       }
-      // do  setup sleep mode
-      
-      // determine transition & prep
-      //Switch state {
-        //Case: sleep {
-          // go to sleep
-        //}
-      //}
+      // do: setup sleep mode
     }
     break;
+
   }
 
 }
