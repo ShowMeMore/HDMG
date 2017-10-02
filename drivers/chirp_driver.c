@@ -18,15 +18,15 @@ void chirp_setup() {
 
 void chirp_start() {
     // power on chirp
-    debug_msg_ln("chirp_driver: powering on step up", DEBUG_CHIRP);
+    debug_msg("chirp_driver: Powering on step up... ", DEBUG_CHIRP);
     digitalWrite(ENABLE_STEP_UP_PIN, ENABLE_STEP_UP_ON);
-    debug_msg_ln("chirp_driver: step up powered on", DEBUG_CHIRP);
+    debug_msg_ln("DONE", DEBUG_CHIRP);
     delay(500);
     // initialize I2C communication
-    debug_msg_ln("chirp_driver: starting Wire", DEBUG_CHIRP);
+    debug_msg("chirp_driver: Starting Wire... ", DEBUG_CHIRP);
     Wire.begin();
     delay(100);
-    debug_msg_ln("chirp_driver: Wire started", DEBUG_CHIRP);
+    debug_msg_ln("DONE", DEBUG_CHIRP);
 }
 
 void chirp_stop() {
@@ -61,13 +61,13 @@ unsigned int chirp_read_value(int sensor) {
     return result;
 }
 
-float chirp_to_percent(unsigned int value) {
-    float val = (float)100/(CHIRP_HUM_TOP-CHIRP_HUM_BOTTOM)*(value-CHIRP_HUM_BOTTOM);
+int chirp_to_percent(unsigned int value) {
+    int val = (float)100/(CHIRP_HUM_TOP-CHIRP_HUM_BOTTOM)*(value-CHIRP_HUM_BOTTOM);
     return val;
 }
 
 // averaged sensor value of moisture sensor
-float chirp_read_stable() {
+int chirp_read_stable() {
     unsigned int sum = 0;
     unsigned int value;
     chirp_start();
