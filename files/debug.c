@@ -43,3 +43,15 @@ void debug_msg(unsigned int msg, boolean cond) {
         Serial.print(msg);
     }
 }
+
+void debug_msg_ln(int msg, boolean cond) {
+    if (cond) {
+        Serial.println(msg);
+    }
+}
+    
+void debug_msg(int msg, boolean cond) {
+    if (cond) {
+        Serial.print(msg);
+    }
+}
