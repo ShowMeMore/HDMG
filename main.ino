@@ -4,22 +4,24 @@
 #define SEND 3
 #define SLEEP 4
 // define the timer values in seconds
-#define TIMER_VALUE_MEASURE 10 // do measurement every hour: 3600
-#define TIMER_VALUE_LED 3
-#define TIMER_VALUE_SEND 60 // send data every 6 hour: 21600
+#define TIMER_VALUE_MEASURE 10 // do measurement every 2h: 7200
+#define TIMER_VALUE_LED_BLINK 3 // blink every 3s when thirsty: 3
+#define TIMER_VALUE_LED_STOP 7200 // stop blinking (thirsty) after 2h: 7200
+#define TIMER_VALUE_SEND 60 // send data every 6h: 21600
 // define threshold to give water
 #define HUM_ALARM_VALUE 50
 //define the states of the plant
 #define PLANT_OK true
 #define PLANT_THIRSTY false
 
-// globals, before includes
-int state = SLEEP;  // enum {MEASURE, CONNECT, SEND, SLEEP}
-boolean plantState = PLANT_OK; // enum {PLANT_OK, PLANT_THIRSTY}
+// globals, before includes!
+int state = SLEEP;  // current state, enum {MEASURE, CONNECT, SEND, SLEEP}
+int humidity; // value of latest humidity measurement
+boolean plantState = PLANT_OK; // current plant state, enum {PLANT_OK, PLANT_THIRSTY}
 byte n; // 8 bit unsigned integer
-int MeasureBuffer[12]; // store the measure values for 1 day (each 2 hours)
+int MeasureBuffer[24]; // store the measured values in a buffer
 boolean  measureFlag, sendFlag, ledFlag = false;
-Ticker measureTicker, sendTicker, ledTicker;
+Ticker measureTicker, ledStopTicker, ledBlinkTicker, sendTicker;
 
 #include <Wire.h>
 #include "files/debug.c"
@@ -36,36 +38,38 @@ void setup() {
   led_setup(LED_PIN);
   // initialize chirp
   chirp_setup();
+  // initialize buffer
+  clearMeasureBuffer();
   // ticker to start measurement
   measureTicker.attach(measureTicker_handle, TIMER_VALUE_MEASURE);
-  //ticker for led
-  ledTicker.attach(ledTicker_handle, TIMER_VALUE_LED);
-  // ticker to send --> implement later
+  // ticker for LED blinking interval
+  ledBlinkTicker.attach(ledBlinkTicker_handle, TIMER_VALUE_LED_BLINK);
+  // ticker to stop LED blinking
+  //ledStopTicker.attach(ledStopTicker_handle, TIMER_VALUE_LED_STOP);
+  // ticker to send values --> implement later
   sendTicker.attach(sendTicker_handle, TIMER_VALUE_SEND);
 }
 
 void loop() {
   switch (state) {
 
-    // measure state
+    // measure state: doint measurement
     case MEASURE: {
-      // LED indicates measurement
-      led_on(LED_PIN);
+      //led_on(LED_PIN); // LED indicates measurement
       // do measurement
-      debug_msg_ln(chirp_read_value(CHIRP_I2C_CAPA), DEBUG_STATE); //
-      int humidity = chirp_read_stable();
-      debug_msg_ln(humidity, DEBUG_STATE);
-      writeMeasureBuffer(humidity);
+      humidity = chirp_read_stable(); // do new measurement
+      debug_msg_ln(humidity, DEBUG_VALUES);
+      writeMeasureBuffer(humidity); // write new measured value to buffer
       // set plantState
       if (humidity < HUM_ALARM_VALUE)
       {
         plantState = PLANT_THIRSTY;
         ledFlag = true;
-        ledTicker.attach(ledTicker_handle, 3);
+        ledBlinkTicker.attach(ledBlinkTicker_handle, 3);
       }else{
         plantState = PLANT_OK;
         ledFlag = false;
-        ledTicker.detach();
+        ledBlinkTicker.detach();
       }
       measureFlag = false;
       // check plantState for LED
@@ -125,14 +129,13 @@ void loop() {
 
     // sleep state
     case SLEEP: {
-      led_on(LED_PIN_BUILTIN); // use builtin LED to indicate sleep mode
       if (measureFlag) {
         state = MEASURE;
         debug_msg_ln("Leave Sleep Mode - Enter Measure Mode", DEBUG_STATE);
-        led_off(LED_PIN_BUILTIN);
       }
       else if (ledFlag) {
-        led_blink(LED_PIN,200,0);
+        //led_blink(LED_PIN,200,0);
+        led_valueblink(LED_PIN, 2000, humidity);
         debug_msg_ln("Too Dry - Need Water!!!", DEBUG_STATE);
         ledFlag = false;
       }
