@@ -1,8 +1,10 @@
 // LED
-#define LED_PIN_BUILTIN D13 // pin of BLENano builtin led
 #define LED_PIN D5
-#define ENABLE_LED_OFF HIGH
-#define ENABLE_LED_ON LOW
+#define LED_OFF HIGH
+#define LED_ON LOW
+
+// BLENano builtin LED
+#define LED_PIN_BUILTIN D13
 
 // Step-Up
 #define ENABLE_STEP_UP_PIN D4
