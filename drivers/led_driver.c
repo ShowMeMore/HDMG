@@ -1,4 +1,4 @@
-boolean led_status;
+boolean led_status; // to get the status ot the LED: on=true / off=false
 
 void led_setup(int pin) {
     // initialize LED communication
@@ -12,7 +12,8 @@ void led_setup(int pin) {
 // Turn LED on
 void led_on(int pin) {
     debug_msg("led_driver: Turn LED on... ", DEBUG_LED);
-    digitalWrite(pin, ENABLE_LED_ON);   // turn the LED on (HIGH is the voltage level)
+    //pinMode(pin, OUTPUT);
+    digitalWrite(pin, LED_ON);   // turn the LED on (HIGH is the voltage level)
     led_status = true;
     debug_msg_ln("DONE", DEBUG_LED);
 }
@@ -20,7 +21,8 @@ void led_on(int pin) {
 // Turn LED off
 void led_off(int pin) {
     debug_msg("led_driver: Turn LED off... ", DEBUG_LED);
-    digitalWrite(pin, ENABLE_LED_OFF);    // turn the LED off by making the voltage LOW
+    digitalWrite(pin, LED_OFF);    // turn the LED off by making the voltage LOW
+    //pinMode(pin, INPUT);
     led_status = false;
     debug_msg_ln("DONE", DEBUG_LED);
 }
