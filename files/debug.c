@@ -4,7 +4,7 @@
 #define DEBUG_CHIRP false
 
 void debug_setup() {
-    if (DEBUG_STATE || DEBUG_LED || DEBUG_CHIRP) {
+    if (DEBUG_STATE || DEBUG_VALUES || DEBUG_LED || DEBUG_CHIRP) {
         Serial.begin(9600);
     }
 }
