@@ -72,12 +72,14 @@ void loop() {
         ledBlinkTicker.detach();
       }
       measureFlag = false;
+      /*
       // check plantState for LED
       if (plantState == PLANT_THIRSTY) {
         // do Set Led Timer
       } else {
         // do Clear Led Timer
       }
+      */
       // determine transition & prep
       if (sendFlag) {
         state = CONNECT;
