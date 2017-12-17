@@ -4,10 +4,10 @@
 #define SEND 3
 #define SLEEP 4
 // define the timer values in seconds
-#define TIMER_VALUE_MEASURE 10 // do measurement every 2h: 7200
+#define TIMER_VALUE_MEASURE 60 // do measurement every 2h: 7200
 #define TIMER_VALUE_LED_BLINK 3 // blink every 3s when thirsty: 3
 #define TIMER_VALUE_LED_STOP 7200 // stop blinking (thirsty) after 2h: 7200
-#define TIMER_VALUE_SEND 60 // send data every 6h: 21600
+#define TIMER_VALUE_SEND 180 // send data every 6h: 21600
 // define threshold to give water
 #define HUM_ALARM_VALUE 50
 //define the states of the plant
@@ -139,7 +139,9 @@ void loop() {
         debug_msg_ln("Too Dry - Need Water!!!", DEBUG_STATE);
         ledFlag = false;
       }
-      // do: setup sleep mode
+      else{
+        __WFI();
+      }
     }
     break;
 
