@@ -5,7 +5,7 @@
 #define SLEEP 4
 // define the timer values in seconds
 #define TIMER_VALUE_MEASURE 60 // do measurement every 2h: 7200
-#define TIMER_VALUE_LED_BLINK 3 // blink every 3s when thirsty: 3
+#define TIMER_VALUE_LED_BLINK 1 // blink every 3s when thirsty: 3
 #define TIMER_VALUE_LED_STOP 7200 // stop blinking (thirsty) after 2h: 7200
 #define TIMER_VALUE_SEND 180 // send data every 6h: 21600
 // define threshold to give water
@@ -65,21 +65,14 @@ void loop() {
       {
         plantState = PLANT_THIRSTY;
         ledFlag = true;
-        ledBlinkTicker.attach(ledBlinkTicker_handle, 3);
+        ledBlinkTicker.attach(ledBlinkTicker_handle, TIMER_VALUE_LED_BLINK);
       }else{
         plantState = PLANT_OK;
+        led_off(LED_PIN);
         ledFlag = false;
         ledBlinkTicker.detach();
       }
       measureFlag = false;
-      /*
-      // check plantState for LED
-      if (plantState == PLANT_THIRSTY) {
-        // do Set Led Timer
-      } else {
-        // do Clear Led Timer
-      }
-      */
       // determine transition & prep
       if (sendFlag) {
         state = CONNECT;
@@ -137,7 +130,8 @@ void loop() {
       }
       else if (ledFlag) {
         //led_blink(LED_PIN,200,0);
-        led_valueblink(LED_PIN, 2000, humidity);
+        //led_valueblink(LED_PIN, 2000, humidity);
+        led_toggle(LED_PIN);
         debug_msg_ln("Too Dry - Need Water!!!", DEBUG_STATE);
         ledFlag = false;
       }
