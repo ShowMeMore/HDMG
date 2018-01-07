@@ -2,6 +2,7 @@
 #define CHIRP_I2C_CAPA 0 // value for reading capacitance sensor
 #define CHIRP_I2C_TEMP 5 // value for reading temperature sensor
 #define CHIRP_I2C_SLEEP 8 // value for putting chirp in sleep mode
+#define CHIRP_I2C_RESET 6 // value for resetting chirp
 
 #define NBR_PRETESTS 3 // number of tests befor averaging sensor value
 #define NBR_TESTS 32 // number of tests for averaging sensor value
@@ -25,6 +26,10 @@ void chirp_start() {
     // initialize I2C communication
     debug_msg("chirp_driver: Starting Wire... ", DEBUG_CHIRP);
     Wire.begin();
+    // reset chirp
+    Wire.beginTransmission(CHIRP_I2C_ADDR);
+    Wire.write(CHIRP_I2C_RESET);
+    Wire.endTransmission();
     delay(100);
     debug_msg_ln("DONE", DEBUG_CHIRP);
 }
