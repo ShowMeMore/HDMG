@@ -4,7 +4,7 @@
 #define SEND 3
 #define SLEEP 4
 // define the timer values in seconds
-#define TIMER_VALUE_MEASURE 60 // do measurement every 2h: 7200
+#define TIMER_VALUE_MEASURE 10 // do measurement every 2h: 7200
 #define TIMER_VALUE_LED_BLINK 1 // blink every 3s when thirsty: 3
 #define TIMER_VALUE_LED_STOP 7200 // stop blinking (thirsty) after 2h: 7200
 #define TIMER_VALUE_SEND 180 // send data every 6h: 21600
