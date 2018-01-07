@@ -7,7 +7,7 @@
 #define TIMER_VALUE_MEASURE 10 // do measurement every 2h: 7200
 #define TIMER_VALUE_LED_BLINK 1 // blink every 3s when thirsty: 3
 #define TIMER_VALUE_LED_STOP 7200 // stop blinking (thirsty) after 2h: 7200
-#define TIMER_VALUE_SEND 180 // send data every 6h: 21600
+#define TIMER_VALUE_SEND 40 // send data every 6h: 21600
 // define threshold to give water
 #define HUM_ALARM_VALUE 50
 //define the states of the plant
@@ -114,6 +114,7 @@ void loop() {
         // do: close ble connection
         // do: failure exception
         //clearMeasureBuffer();
+        sendFlag = false; // clear flag after successful data transmission
         state = SLEEP;
         debug_msg_ln("Leave Send Mode - Enter Sleep Mode", DEBUG_STATE);
       } else {
