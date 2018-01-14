@@ -5,6 +5,7 @@ void led_setup(int pin) {
     // initialize digital pin LED_BUILTIN as an output.
     debug_msg("led_driver: Setup LED... ", DEBUG_LED);
     pinMode(pin, OUTPUT);
+    digitalWrite(pin, LED_OFF);
     led_status = false;
     debug_msg_ln("DONE", DEBUG_LED);
 }
