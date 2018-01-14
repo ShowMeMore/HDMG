@@ -43,7 +43,7 @@ void setup() {
   // ticker to start measurement
   measureTicker.attach(measureTicker_handle, TIMER_VALUE_MEASURE);
   // ticker for LED blinking interval
-  ledBlinkTicker.attach(ledBlinkTicker_handle, TIMER_VALUE_LED_BLINK);
+  //ledBlinkTicker.attach(ledBlinkTicker_handle, TIMER_VALUE_LED_BLINK);
   // ticker to stop LED blinking
   //ledStopTicker.attach(ledStopTicker_handle, TIMER_VALUE_LED_STOP);
   // ticker to send values --> implement later
@@ -55,11 +55,11 @@ void loop() {
 
     // measure state: doint measurement
     case MEASURE: {
-      //led_on(LED_PIN); // LED indicates measurement
       // do measurement
       humidity = chirp_read_stable(); // do new measurement
       debug_msg_ln(humidity, DEBUG_VALUES);
       writeMeasureBuffer(humidity); // write new measured value to buffer
+      measureFlag = false;
       // set plantState
       if (humidity < HUM_ALARM_VALUE)
       {
@@ -68,11 +68,10 @@ void loop() {
         ledBlinkTicker.attach(ledBlinkTicker_handle, TIMER_VALUE_LED_BLINK);
       }else{
         plantState = PLANT_OK;
-        led_off(LED_PIN);
         ledFlag = false;
+        led_off(LED_PIN);
         ledBlinkTicker.detach();
       }
-      measureFlag = false;
       // determine transition & prep
       if (sendFlag) {
         state = CONNECT;
@@ -82,7 +81,6 @@ void loop() {
         state = SLEEP;
         debug_msg_ln("Leave Measure Mode - Enter Sleep Mode", DEBUG_STATE);
       }
-      led_off(LED_PIN);
     }
     break;
 
@@ -130,8 +128,6 @@ void loop() {
         debug_msg_ln("Leave Sleep Mode - Enter Measure Mode", DEBUG_STATE);
       }
       else if (ledFlag) {
-        //led_blink(LED_PIN,200,0);
-        //led_valueblink(LED_PIN, 2000, humidity);
         led_toggle(LED_PIN);
         debug_msg_ln("Too Dry - Need Water!!!", DEBUG_STATE);
         ledFlag = false;
