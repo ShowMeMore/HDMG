@@ -1,11 +1,18 @@
-#define DEBUG_STATE false
-#define DEBUG_VALUES false
-#define DEBUG_LED false
-#define DEBUG_CHIRP false
+#define DEBUG_STATE true
+#define DEBUG_VALUES true
+#define DEBUG_LED true
+#define DEBUG_CHIRP true
 
-void debug_setup() {
-    if (DEBUG_STATE || DEBUG_VALUES || DEBUG_LED || DEBUG_CHIRP) {
+
+void debug_setup(boolean state) {
+    if (state) {
         Serial.begin(9600);
+    }
+}
+
+void debug_stop() {
+    if (DEBUG_STATE || DEBUG_VALUES || DEBUG_LED || DEBUG_CHIRP) {
+        Serial.end();
     }
 }
 

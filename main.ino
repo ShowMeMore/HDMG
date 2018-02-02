@@ -33,7 +33,7 @@ Ticker measureTicker, ledStopTicker, ledBlinkTicker, sendTicker;
 
 void setup() {
   // initialize serial monitor with baude rate 9600
-  debug_setup();
+  debug_setup(DEBUG_VALUES || DEBUG_LED || DEBUG_CHIRP);
   // initialize LED
   led_setup(LED_PIN);
   // initialize chirp
@@ -51,6 +51,9 @@ void setup() {
 }
 
 void loop() {
+  // Turn on serial monitor only if needed
+  debug_setup(DEBUG_VALUES || DEBUG_LED || DEBUG_CHIRP);
+
   switch (state) {
 
     // measure state: doint measurement
@@ -138,11 +141,17 @@ void loop() {
       }
       else if (ledFlag) {
         //led_blink(LED_PIN,200,0);
-        led_valueblink(LED_PIN, 2000, humidity);
+//        led_valueblink(LED_PIN, 2000, humidity);
         debug_msg_ln("Too Dry - Need Water!!!", DEBUG_STATE);
         ledFlag = false;
+        
+        // go to sleep mode
+        debug_stop();
+        __WFI();
       }
       else{
+        // go to sleep mode
+        debug_stop();
         __WFI();
       }
     }
