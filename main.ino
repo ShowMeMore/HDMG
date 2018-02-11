@@ -5,7 +5,7 @@
 #define SLEEP 4
 // define the timer values in seconds
 #define TIMER_VALUE_MEASURE 10 // do measurement every 2h: 7200
-#define TIMER_VALUE_LED_BLINK 1 // blink every 3s when thirsty: 3
+#define TIMER_VALUE_LED_BLINK 3 // blink every 3s when thirsty: 3
 #define TIMER_VALUE_LED_STOP 7200 // stop blinking (thirsty) after 2h: 7200
 #define TIMER_VALUE_SEND 40 // send data every 6h: 21600
 // define threshold to give water
@@ -15,7 +15,7 @@
 #define PLANT_THIRSTY false
 
 // globals, before includes!
-int state = SLEEP;  // current state, enum {MEASURE, CONNECT, SEND, SLEEP}
+int state = MEASURE;  // current state, enum {MEASURE, CONNECT, SEND, SLEEP}
 int humidity; // value of latest humidity measurement
 boolean plantState = PLANT_OK; // current plant state, enum {PLANT_OK, PLANT_THIRSTY}
 byte n; // 8 bit unsigned integer
@@ -33,7 +33,7 @@ Ticker measureTicker, ledStopTicker, ledBlinkTicker, sendTicker;
 
 void setup() {
   // initialize serial monitor with baude rate 9600
-  debug_setup(DEBUG_VALUES || DEBUG_LED || DEBUG_CHIRP);
+  debug_setup();
   // initialize LED
   led_setup(LED_PIN);
   // initialize chirp
@@ -51,8 +51,8 @@ void setup() {
 }
 
 void loop() {
-  // Turn on serial monitor only if needed
-  debug_setup(DEBUG_VALUES || DEBUG_LED || DEBUG_CHIRP);
+  // Turn on serial monitor only if needed, should be enabled in ISRs
+//  debug_setup();
 
   switch (state) {
 
@@ -134,10 +134,6 @@ void loop() {
         led_toggle(LED_PIN);
         debug_msg_ln("Too Dry - Need Water!!!", DEBUG_STATE);
         ledFlag = false;
-        
-        // go to sleep mode
-        debug_stop();
-        __WFI();
       }
       else{
         // go to sleep mode
