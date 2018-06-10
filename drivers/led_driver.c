@@ -1,5 +1,4 @@
 boolean led_status; // to get the status ot the LED: on=true / off=false
-char frac_counter; // counter for blink timing fraction
 
 void led_setup(int pin) {
     // initialize LED communication
@@ -34,19 +33,15 @@ void led_toggle(int pin) {
     debug_msg("led_driver: Toggle LED... ", DEBUG_LED);
     if (led_status) {
         led_off(pin);
-        frac_counter = LED_BLINK_FRAC;
-        debug_msg("led_driver: set frac_counter to ", DEBUG_LED);
-        debug_msg_ln(frac_counter, DEBUG_LED);
+        ledBlinkTicker.detach();
+        ledBlinkTicker.attach(ledBlinkTicker_handle, TIMER_VALUE_LED_BLINK_OFF);
+        debug_msg_ln("led_driver: set led timer to on", DEBUG_LED);
     }
     else {
-        if (frac_counter > 0) {
-            frac_counter--;
-            debug_msg("led_driver: frac_coutner-- to ", DEBUG_LED);
-            debug_msg_ln(frac_counter, DEBUG_LED);
-        }
-        else {
-            led_on(pin);
-        }
+        led_on(pin);
+        ledBlinkTicker.detach();
+        ledBlinkTicker.attach(ledBlinkTicker_handle, TIMER_VALUE_LED_BLINK_ON);
+        debug_msg_ln("led_driver: set led timer to off", DEBUG_LED);
     }
     debug_msg_ln("DONE", DEBUG_LED);
 }
