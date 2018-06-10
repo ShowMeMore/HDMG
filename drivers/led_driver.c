@@ -1,4 +1,5 @@
 boolean led_status; // to get the status ot the LED: on=true / off=false
+char frac_counter; // counter for blink timing fraction
 
 void led_setup(int pin) {
     // initialize LED communication
@@ -33,14 +34,25 @@ void led_toggle(int pin) {
     debug_msg("led_driver: Toggle LED... ", DEBUG_LED);
     if (led_status) {
         led_off(pin);
+        frac_counter = LED_BLINK_FRAC;
+        debug_msg("led_driver: set frac_counter to ", DEBUG_LED);
+        debug_msg_ln(frac_counter, DEBUG_LED);
     }
     else {
-        led_on(pin);
+        if (frac_counter > 0) {
+            frac_counter--;
+            debug_msg("led_driver: frac_coutner-- to ", DEBUG_LED);
+            debug_msg_ln(frac_counter, DEBUG_LED);
+        }
+        else {
+            led_on(pin);
+        }
     }
     debug_msg_ln("DONE", DEBUG_LED);
 }
 
 // LED blinking with on_duration and off_duration
+/* this routine should only be used for development - highly energyineffiecient
 void led_blink(int pin, int on_duration, int off_duration) {
     debug_msg("led_driver: Blink LED... ", DEBUG_LED);
     led_on(pin);
@@ -48,7 +60,7 @@ void led_blink(int pin, int on_duration, int off_duration) {
     led_off(pin);
     delay(off_duration);
     debug_msg_ln("DONE", DEBUG_LED);
-}
+}*/
 
 // LED blinking with measured value: more thirsty --> longer blink
 void led_valueblink(int pin, int total_duration, int value) {

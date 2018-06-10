@@ -5,14 +5,16 @@
 #define SLEEP 4
 // define the timer values in seconds
 #define TIMER_VALUE_MEASURE 3600 // do measurement every 2h: 7200
-#define TIMER_VALUE_LED_BLINK 3 // blink every 3s when thirsty: 3
+#define TIMER_VALUE_LED_BLINK 1 // blink for 1s when thirsty
 #define TIMER_VALUE_LED_STOP 7200 // stop blinking (thirsty) after 2h: 7200
 #define TIMER_VALUE_SEND 360 // send data every 6h: 21600
 // define threshold to give water
-#define HUM_ALARM_VALUE 15
-//define the states of the plant
+#define HUM_ALARM_VALUE 50 // for testing purpose only, be sure led will blink, was 15
+// define the states of the plant
 #define PLANT_OK true
 #define PLANT_THIRSTY false
+// define off/on fraction
+#define LED_BLINK_FRAC 4 // 4x longer off than on
 
 // globals, before includes!
 int state = MEASURE;  // current state, enum {MEASURE, CONNECT, SEND, SLEEP}
