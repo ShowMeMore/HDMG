@@ -5,12 +5,12 @@
 #define SLEEP 4
 // define the timer values in seconds
 #define TIMER_VALUE_MEASURE 3600 // do measurement every 2h: 7200
-#define TIMER_VALUE_LED_BLINK_ON 1 // blink for 1s on when thirsty
-#define TIMER_VALUE_LED_BLINK_OFF 4 // blink for 4s off when thirsty
+#define TIMER_VALUE_LED_BLINK_ON 0.2 // blink for 1s on when thirsty
+#define TIMER_VALUE_LED_BLINK_OFF 3.3 // blink for 4s off when thirsty
 #define TIMER_VALUE_LED_STOP 7200 // stop blinking (thirsty) after 2h: 7200
-#define TIMER_VALUE_SEND 360 // send data every 6h: 21600
+#define TIMER_VALUE_SEND 360 // 6min; send data every 6h: 21600
 // define threshold to give water
-#define HUM_ALARM_VALUE 50 // for testing purpose only, be sure led will blink, was 15
+#define HUM_ALARM_VALUE 15
 // define the states of the plant
 #define PLANT_OK true
 #define PLANT_THIRSTY false

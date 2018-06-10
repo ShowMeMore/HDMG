@@ -1,6 +1,6 @@
 #define DEBUG_STATE false
 #define DEBUG_VALUES true
-#define DEBUG_LED true
+#define DEBUG_LED false
 #define DEBUG_CHIRP false
 
 
