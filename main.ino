@@ -4,12 +4,12 @@
 #define SEND 3
 #define SLEEP 4
 // define the timer values in seconds
-#define TIMER_VALUE_MEASURE 10 // do measurement every 2h: 7200
+#define TIMER_VALUE_MEASURE 3600 // do measurement every 2h: 7200
 #define TIMER_VALUE_LED_BLINK 3 // blink every 3s when thirsty: 3
 #define TIMER_VALUE_LED_STOP 7200 // stop blinking (thirsty) after 2h: 7200
-#define TIMER_VALUE_SEND 40 // send data every 6h: 21600
+#define TIMER_VALUE_SEND 360 // send data every 6h: 21600
 // define threshold to give water
-#define HUM_ALARM_VALUE 50
+#define HUM_ALARM_VALUE 15
 //define the states of the plant
 #define PLANT_OK true
 #define PLANT_THIRSTY false
@@ -47,10 +47,22 @@ void setup() {
   // ticker to stop LED blinking
   //ledStopTicker.attach(ledStopTicker_handle, TIMER_VALUE_LED_STOP);
   // ticker to send values --> implement later
+
+
+
   sendTicker.attach(sendTicker_handle, TIMER_VALUE_SEND);
 }
 
 void loop() {
+/*  // LED Test & transisto
+  chirp_start();
+  led_on(LED_PIN);
+  delay(200);
+  debug_msg_ln(chirp_read(CHIRP_I2C_CAPA),DEBUG_CHIRP);
+  delay(1000);
+  chirp_stop();
+  led_off(LED_PIN);
+  delay(1000);*/
   // Turn on serial monitor only if needed, should be enabled in ISRs
 //  debug_setup();
 
@@ -69,7 +81,7 @@ void loop() {
         plantState = PLANT_THIRSTY;
         ledFlag = true;
         ledBlinkTicker.attach(ledBlinkTicker_handle, TIMER_VALUE_LED_BLINK);
-      }else{
+      } else {
         plantState = PLANT_OK;
         ledFlag = false;
         led_off(LED_PIN);
@@ -130,6 +142,10 @@ void loop() {
         state = MEASURE;
         debug_msg_ln("Leave Sleep Mode - Enter Measure Mode", DEBUG_STATE);
       }
+      else if (sendFlag) {
+        state = SEND;
+        debug_msg_ln("Leave Sleep Mode - Enter Send Mode", DEBUG_STATE);
+      }
       else if (ledFlag) {
         led_toggle(LED_PIN);
         debug_msg_ln("Too Dry - Need Water!!!", DEBUG_STATE);
@@ -144,5 +160,4 @@ void loop() {
     break;
 
   }
-
 }

@@ -1,7 +1,7 @@
-#define DEBUG_STATE true
+#define DEBUG_STATE false
 #define DEBUG_VALUES true
 #define DEBUG_LED false
-#define DEBUG_CHIRP true
+#define DEBUG_CHIRP false
 
 
 void debug_setup() {

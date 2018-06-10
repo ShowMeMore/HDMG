@@ -91,13 +91,14 @@ int chirp_read_stable() {
             i--;
         } else {
             count_errors++;
-            if (count_errors > NBR_MAX_ERRORS) {
-                // too many error value sensor reads
-                return 0;
-            }
         }
     }
     chirp_stop();
+    // inform about errors with chirp
+    if (count_errors > 0) {
+        debug_msg("chirp_driver: errors on chirp readout occured: ", DEBUG_CHIRP);
+        debug_msg_ln(count_errors, DEBUG_CHIRP);
+    }
     // (unsigned int) sum = [0 65535]
     // max sensor value: 765
     // max nbr of tests: 65535/765 = 85
