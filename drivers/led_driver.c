@@ -33,14 +33,21 @@ void led_toggle(int pin) {
     debug_msg("led_driver: Toggle LED... ", DEBUG_LED);
     if (led_status) {
         led_off(pin);
+        ledBlinkTicker.detach();
+        ledBlinkTicker.attach(ledBlinkTicker_handle, TIMER_VALUE_LED_BLINK_OFF);
+        debug_msg_ln("led_driver: set led timer to on", DEBUG_LED);
     }
     else {
         led_on(pin);
+        ledBlinkTicker.detach();
+        ledBlinkTicker.attach(ledBlinkTicker_handle, TIMER_VALUE_LED_BLINK_ON);
+        debug_msg_ln("led_driver: set led timer to off", DEBUG_LED);
     }
     debug_msg_ln("DONE", DEBUG_LED);
 }
 
 // LED blinking with on_duration and off_duration
+/* this routine should only be used for development - highly energyineffiecient
 void led_blink(int pin, int on_duration, int off_duration) {
     debug_msg("led_driver: Blink LED... ", DEBUG_LED);
     led_on(pin);
@@ -48,7 +55,7 @@ void led_blink(int pin, int on_duration, int off_duration) {
     led_off(pin);
     delay(off_duration);
     debug_msg_ln("DONE", DEBUG_LED);
-}
+}*/
 
 // LED blinking with measured value: more thirsty --> longer blink
 void led_valueblink(int pin, int total_duration, int value) {

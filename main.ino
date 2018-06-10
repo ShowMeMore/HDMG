@@ -5,12 +5,13 @@
 #define SLEEP 4
 // define the timer values in seconds
 #define TIMER_VALUE_MEASURE 3600 // do measurement every 2h: 7200
-#define TIMER_VALUE_LED_BLINK 3 // blink every 3s when thirsty: 3
+#define TIMER_VALUE_LED_BLINK_ON 0.2 // blink for 1s on when thirsty
+#define TIMER_VALUE_LED_BLINK_OFF 3.3 // blink for 4s off when thirsty
 #define TIMER_VALUE_LED_STOP 7200 // stop blinking (thirsty) after 2h: 7200
-#define TIMER_VALUE_SEND 360 // send data every 6h: 21600
+#define TIMER_VALUE_SEND 360 // 6min; send data every 6h: 21600
 // define threshold to give water
 #define HUM_ALARM_VALUE 15
-//define the states of the plant
+// define the states of the plant
 #define PLANT_OK true
 #define PLANT_THIRSTY false
 
@@ -51,6 +52,7 @@ void setup() {
 
 
   sendTicker.attach(sendTicker_handle, TIMER_VALUE_SEND);
+  debug_msg_ln("setup done", DEBUG_STATE || DEBUG_VALUES || DEBUG_LED || DEBUG_CHIRP);
 }
 
 void loop() {
@@ -80,7 +82,7 @@ void loop() {
       {
         plantState = PLANT_THIRSTY;
         ledFlag = true;
-        ledBlinkTicker.attach(ledBlinkTicker_handle, TIMER_VALUE_LED_BLINK);
+        ledBlinkTicker.attach(ledBlinkTicker_handle, TIMER_VALUE_LED_BLINK_ON);
       } else {
         plantState = PLANT_OK;
         ledFlag = false;
