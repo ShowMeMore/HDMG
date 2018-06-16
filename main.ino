@@ -1,16 +1,33 @@
+// Turn debug mode on/off
+#define DEBUG_MODE true
+
 // define the states of the statemachine
 #define MEASURE 1
 #define CONNECT 2
 #define SEND 3
 #define SLEEP 4
-// define the timer values in seconds
-#define TIMER_VALUE_MEASURE 3600 // do measurement every 2h: 7200
-#define TIMER_VALUE_LED_BLINK_ON 0.2 // blink for 1s on when thirsty
-#define TIMER_VALUE_LED_BLINK_OFF 3.3 // blink for 4s off when thirsty
-#define TIMER_VALUE_LED_STOP 7200 // stop blinking (thirsty) after 2h: 7200
-#define TIMER_VALUE_SEND 360 // 6min; send data every 6h: 21600
-// define threshold to give water
-#define HUM_ALARM_VALUE 15
+
+#if (DEBUG_MODE)
+  // define the timer values in seconds
+  #define TIMER_VALUE_MEASURE 3600 // do measurement every 1h
+  #define TIMER_VALUE_LED_BLINK_ON 0.2 // blink for 1s on when thirsty
+  #define TIMER_VALUE_LED_BLINK_OFF 3.3 // blink for 4s off when thirsty
+  #define TIMER_VALUE_LED_STOP 7200 // stop blinking (thirsty) after 2h
+  #define TIMER_VALUE_SEND 360 // send data every 6min
+  // define threshold to give water
+  #define HUM_ALARM_VALUE 15
+#endif
+#if (!DEBUG_MODE)
+  // define the timer values in seconds
+  #define TIMER_VALUE_MEASURE 3600 // do measurement every 1h
+  #define TIMER_VALUE_LED_BLINK_ON 0.2 // blink for 1s on when thirsty
+  #define TIMER_VALUE_LED_BLINK_OFF 3.3 // blink for 4s off when thirsty
+  #define TIMER_VALUE_LED_STOP 7200 // stop blinking (thirsty) after 2h
+  #define TIMER_VALUE_SEND 21600 // 6min; send data every 6h
+  // define threshold to give water
+  #define HUM_ALARM_VALUE 15
+#endif
+
 // define the states of the plant
 #define PLANT_OK true
 #define PLANT_THIRSTY false
@@ -34,7 +51,9 @@ Ticker measureTicker, ledStopTicker, ledBlinkTicker, sendTicker;
 
 void setup() {
   // initialize serial monitor with baude rate 9600
-  debug_setup();
+  if (DEBUG_MODE) {
+    debug_setup();
+  }
   // initialize LED
   led_setup(LED_PIN);
   // initialize chirp
@@ -48,9 +67,6 @@ void setup() {
   // ticker to stop LED blinking
   //ledStopTicker.attach(ledStopTicker_handle, TIMER_VALUE_LED_STOP);
   // ticker to send values --> implement later
-
-
-
   sendTicker.attach(sendTicker_handle, TIMER_VALUE_SEND);
   debug_msg_ln("setup done", DEBUG_STATE || DEBUG_VALUES || DEBUG_LED || DEBUG_CHIRP);
 }
