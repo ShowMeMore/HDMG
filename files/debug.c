@@ -13,13 +13,13 @@
 #endif
 
 void debug_setup() {
-    if (DEBUG_STATE || DEBUG_VALUES || DEBUG_LED || DEBUG_CHIRP) {
+    if (DEBUG_MODE) {
         Serial.begin(9600);
     }
 }
 
 void debug_stop() {
-    if (DEBUG_STATE || DEBUG_VALUES || DEBUG_LED || DEBUG_CHIRP) {
+    if (DEBUG_MODE) {
         Serial.end();
     }
 }
