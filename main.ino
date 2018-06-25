@@ -16,8 +16,7 @@
   #define TIMER_VALUE_SEND 360 // send data every 6min
   // define threshold to give water
   #define HUM_ALARM_VALUE 15
-#endif
-#if (!DEBUG_MODE)
+#else
   // define the timer values in seconds
   #define TIMER_VALUE_MEASURE 3600 // do measurement every 1h
   #define TIMER_VALUE_LED_BLINK_ON 0.2 // blink for 1s on when thirsty

@@ -3,9 +3,7 @@
     #define DEBUG_VALUES true
     #define DEBUG_LED false
     #define DEBUG_CHIRP false
-#endif
-
-#if (!DEBUG_MODE)
+#else
     #define DEBUG_STATE false
     #define DEBUG_VALUES false
     #define DEBUG_LED false
