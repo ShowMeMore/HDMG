@@ -9,6 +9,7 @@
 
 #if (DEBUG_MODE)
   // define the timer values in seconds
+  #define TIMER_VALUE_START 10 // first measurement starts after 60s
   #define TIMER_VALUE_MEASURE 3600 // do measurement every 1h
   #define TIMER_VALUE_LED_BLINK_ON 0.2 // blink for 1s on when thirsty
   #define TIMER_VALUE_LED_BLINK_OFF 3.3 // blink for 4s off when thirsty
@@ -18,6 +19,7 @@
   #define HUM_ALARM_VALUE 15
 #else
   // define the timer values in seconds
+  #define TIMER_VALUE_START 60 // first measurement starts after 60s
   #define TIMER_VALUE_MEASURE 3600 // do measurement every 1h
   #define TIMER_VALUE_LED_BLINK_ON 0.2 // blink for 1s on when thirsty
   #define TIMER_VALUE_LED_BLINK_OFF 3.3 // blink for 4s off when thirsty
@@ -32,13 +34,13 @@
 #define PLANT_THIRSTY false
 
 // globals, before includes!
-int state = MEASURE;  // current state, enum {MEASURE, CONNECT, SEND, SLEEP}
+int state = SLEEP;  // current state, enum {MEASURE, CONNECT, SEND, SLEEP}
 int humidity; // value of latest humidity measurement
 boolean plantState = PLANT_OK; // current plant state, enum {PLANT_OK, PLANT_THIRSTY}
 byte n; // 8 bit unsigned integer
 int MeasureBuffer[24]; // store the measured values in a buffer
 boolean  measureFlag, sendFlag, ledFlag = false;
-Ticker measureTicker, ledStopTicker, ledBlinkTicker, sendTicker;
+Ticker startTicker, measureTicker, ledStopTicker, ledBlinkTicker, sendTicker;
 
 #include <Wire.h>
 #include "files/debug.c"
@@ -50,24 +52,21 @@ Ticker measureTicker, ledStopTicker, ledBlinkTicker, sendTicker;
 
 void setup() {
   // initialize serial monitor with baude rate 9600
-  if (DEBUG_MODE) {
-    debug_setup();
-  }
+  debug_setup();
+  debug_msg("Setup: Start setup... ", DEBUG_MODE);
   // initialize LED
   led_setup(LED_PIN);
   // initialize chirp
   chirp_setup();
   // initialize buffer
   clearMeasureBuffer();
-  // ticker to start measurement
-  measureTicker.attach(measureTicker_handle, TIMER_VALUE_MEASURE);
+  // ticker to start programm
+  startTicker.attach(startTicker_handle, TIMER_VALUE_START);
   // ticker for LED blinking interval
   //ledBlinkTicker.attach(ledBlinkTicker_handle, TIMER_VALUE_LED_BLINK);
   // ticker to stop LED blinking
   //ledStopTicker.attach(ledStopTicker_handle, TIMER_VALUE_LED_STOP);
-  // ticker to send values --> implement later
-  sendTicker.attach(sendTicker_handle, TIMER_VALUE_SEND);
-  debug_msg_ln("setup done", DEBUG_STATE || DEBUG_VALUES || DEBUG_LED || DEBUG_CHIRP);
+  debug_msg_ln("DONE", DEBUG_MODE);
 }
 
 void loop() {

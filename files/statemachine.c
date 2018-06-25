@@ -28,3 +28,15 @@ void sendTicker_handle(void) {
   sendFlag = true; // wake up to send
   debug_msg_ln("DONE", DEBUG_STATE);
 }
+
+void startTicker_handle(void) {
+  debug_setup();
+  debug_msg("Setup: Start program... ", DEBUG_MODE);
+  // ticker to start measurement
+  measureTicker.attach(measureTicker_handle, TIMER_VALUE_MEASURE);
+  // ticker to send values --> implement later
+  sendTicker.attach(sendTicker_handle, TIMER_VALUE_SEND);
+  measureFlag = true; // wake up to measure
+  startTicker.detach();
+  debug_msg_ln("DONE", DEBUG_MODE);
+}
